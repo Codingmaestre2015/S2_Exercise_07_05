@@ -14,6 +14,26 @@
 
 /* global variables */
 var photoOrder = [1, 2, 3, 4, 5];
+var figureCount = 3;
+
+/* add src values to img elements based on order specified in photoOrder array */
+function populateFigures() {
+    var filename;
+    var currentFig;
+    if (figureCount === 3) {
+        for (var i = 1; i < 4; i++) {
+            filename = "images/IMG_0" + photoOrder[i] + "sm.jpg";
+            currentFig = document.getElementsByTagName("img")[i - 1];
+            currentFig.src = filename;
+        }
+    } else {
+        for (var i = 0; i < 5; i++) {
+            filename = "images/IMG_0" + photoOrder[i] + "sm.jpg";
+            currentFig = document.getElementsByTagName("img")[i];
+            currentFig.src = filename;
+        }
+    }
+}
 
 /* shift all images one figure to the left, and change values in photoOrder array to match  */
 function rightArrow() {
@@ -39,6 +59,60 @@ function leftArrow() {
     }
 }
 
+//switch to 5 img layout
+function previewFive() {
+    var articleEl = document.getElementsByTagName("article")[0];
+    // create figure and img elements for fifth image
+    var lastFigure = document.createElement("figure");
+    lastFigure.id = "fig5";
+    lastFigure.style.zIndex = "5";
+    lastFigure.style.position = "absolute";
+    lastFigure.style.right = "45px";
+    lastFigure.style.top = "67px";
+    var lastImage = document.createElement("img");
+    lastImage.width = "240";
+    lastImage.height = "135";
+
+    lastFigure.appendChild(lastImage);
+    //articleEl.appendChild(lastFigure);
+    articleEl.insertBefore(lastFigure, document.getElementById("rightarrow"));
+
+    // clone figure element for fifth image and edit to be first image
+    var firstFigure = lastFigure.cloneNode(true);
+    firstFigure.id = "fig1";
+    firstFigure.style.right = "";
+    firstFigure.style.left = "45px";
+
+    //articleEl.appendChild(firstFigure);
+    articleEl.insertBefore(firstFigure, document.getElementById("fig2"));
+
+    // add appropriate src values to two new img elements
+    document.getElementsByTagName("img")[0].src = "images/IMG_0" +
+        photoOrder[0] + "sm.jpg";
+    document.getElementsByTagName("img")[4].src = "images/IMG_0" +
+        photoOrder[4] + "sm.jpg";
+
+    figureCount = 5;
+
+    //change button to hide extra images
+    var numberButton = document.querySelector("#fiveButton p");
+    numberButton.innerHTML = "Show fewer images";
+    numberButton.removeEventListener("click", previewFive);
+    numberButton.addEventListener("click", previewThree);
+}
+
+/* switch to a 3-image layout*/
+function previewThree() {
+    var articleEl = document.getElementsByTagName("article")[0];
+    var numberButton = document.querySelector("#fiveButton p");
+    articleEl.removeChild(document.getElementById("fig1"));
+    articleEl.removeChild(document.getElementById("fig5"));
+    figureCount = 3;
+    numberButton.innerHTML = "Show more images";
+    numberButton.removeEventListener("click", previewThree);
+    numberButton.addEventListener("click", previewFive);
+}
+
 /* open center figure in separate window */
 function zoomFig() {
 
@@ -53,6 +127,10 @@ function createEventListeners() {
     rightarrow.addEventListener("click", rightArrow);
 
     var mainFig = document.getElementsByTagName("img")[1];
+    mainFig.addEventListener("click", zoomFig);
+
+    var showAllButton = document.querySelector("#fiveButton p");
+    showAllButton.addEventListener("click", previewFive);
 }
 
 
