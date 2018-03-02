@@ -15,6 +15,7 @@
 /* global variables */
 var photoOrder = [1, 2, 3, 4, 5];
 var figureCount = 3;
+var autoAdvance = setInterval(rightAdvance, 1000);
 
 /* add src values to img elements based on order specified in photoOrder array */
 function populateFigures() {
@@ -35,8 +36,14 @@ function populateFigures() {
     }
 }
 
-/* shift all images one figure to the left, and change values in photoOrder array to match  */
+/* stop automatic image switching and call rightAdvance() function*/
 function rightArrow() {
+    clearInterval(autoAdvance);
+    rightAdvance();
+}
+
+/* shift all images one figure to the left, and change values in photoOrder array to match  */
+function rightAdvance() {
     for (var i = 0; i < 5; i++) {
         if ((photoOrder[i] + 1) === 6) {
             photoOrder[i] = 1;
@@ -49,6 +56,7 @@ function rightArrow() {
 
 /* shift all images one figure to the right, and change values in photoOrder array to match  */
 function leftArrow() {
+    clearInterval(autoAdvance);
     for (var i = 0; i < 5; i++) {
         if ((photoOrder[i] - 1) === 0) {
             photoOrder[i] = 5;
@@ -107,7 +115,9 @@ function previewThree() {
     var numberButton = document.querySelector("#fiveButton p");
     articleEl.removeChild(document.getElementById("fig1"));
     articleEl.removeChild(document.getElementById("fig5"));
+
     figureCount = 3;
+
     numberButton.innerHTML = "Show more images";
     numberButton.removeEventListener("click", previewThree);
     numberButton.addEventListener("click", previewFive);
@@ -115,7 +125,8 @@ function previewThree() {
 
 /* open center figure in separate window */
 function zoomFig() {
-
+    var zoomWindow = window.open("zoom.html", "zoomwin", "width=960,height=600");
+    zoomWindow.focus();
 }
 
 /* create event listeners for left arrow, right arrow, and center figure element*/
